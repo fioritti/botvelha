@@ -13,6 +13,8 @@ import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
 import org.botvelha.domain.tabuleiro.PosicaoTabuleiroEnum;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 public class PartidaTest {
 	
 
@@ -37,7 +39,7 @@ public class PartidaTest {
 	}
 	
 	@Test
-	public void deveFazerJogadaEJogoContinuaEmAndameto() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveFazerJogadaEJogoContinuaEmAndameto() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.EM_ANDAMENTO;
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
 		Jogador bot = new DummyBot();
@@ -49,7 +51,7 @@ public class PartidaTest {
 	}
 	
 	@Test
-	public void deveFazerJogadasEJogoDeveSerFinalizado() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveFazerJogadasEJogoDeveSerFinalizado() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.FINALIZADO;
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
 		Jogador bot = new DummyBot();
@@ -64,7 +66,7 @@ public class PartidaTest {
 	}
 
 	@Test(expected=PosicaoJaPreenchidaException.class)
-	public void deveFazerJogadaEmPosicaoJaOcupadaEObterErro() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveFazerJogadaEmPosicaoJaOcupadaEObterErro() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
 		Jogador bot = new DummyBot();
 		Partida partida = new Partida(guileme13,bot);
@@ -77,7 +79,7 @@ public class PartidaTest {
 	}
 
 	@Test
-	public void deveFazerJogadasObterPartidaFinalizadaEObterVencedor() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveFazerJogadasObterPartidaFinalizadaEObterVencedor() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.FINALIZADO;
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
 		Jogador bot = new DummyBot();
@@ -99,7 +101,7 @@ public class PartidaTest {
 	}
 	
 	@Test(expected=PartidaFinalizadaException.class)
-	public void deveFazerJogadasEObterExcecaoDePartidaJaFinalizada() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveFazerJogadasEObterExcecaoDePartidaJaFinalizada() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
 		Jogador bot = new DummyBot();
 		Partida partida = new Partida(guileme13,bot);
@@ -119,7 +121,7 @@ public class PartidaTest {
 	}
 	
 	@Test
-	public void deveArmazenarJogadas() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void deveArmazenarJogadas() throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		List<PosicaoTabuleiroEnum> jogadasArmazendasEsperada = Arrays.asList(PosicaoTabuleiroEnum._0_0,PosicaoTabuleiroEnum._1_0,PosicaoTabuleiroEnum._0_1,PosicaoTabuleiroEnum._1_1,PosicaoTabuleiroEnum._0_2);
 		
 		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");

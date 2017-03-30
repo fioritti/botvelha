@@ -11,6 +11,11 @@ import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
 import org.botvelha.domain.tabuleiro.PosicaoTabuleiroEnum;
 import org.botvelha.domain.tabuleiro.Tabuleiro;
 import org.botvelha.domain.tabuleiro.TipoElementoEnum;
+import org.botvelha.repository.dao.PartidaDao;
+import org.botvelha.repository.entity.PartidaEntity;
+import org.botvelha.repository.infrastructure.CriadorDeSessao;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class Partida {
 
@@ -21,6 +26,7 @@ public class Partida {
 	private int jogadorAtual;
 	private AvaliadorPartida avaliadorPartida;
 	private Jogador jogadorVencedor;
+	private PartidaDao partidaDao;
 	
 	
 	public Partida(Jogador jogador, Jogador boot) {
@@ -28,6 +34,8 @@ public class Partida {
 		this.jogadores[0]=jogador;
 		this.jogadores[1]=boot;
 		this.avaliadorPartida = new AvaliadorPartida(new Tabuleiro());
+		this.partidaDao = new PartidaDao(new CriadorDeSessao().getSession());
+		
 	}
 
 
@@ -72,20 +80,21 @@ public class Partida {
 	}
 
 
-	public void fazerJogada(Jogador jogador, PosicaoTabuleiroEnum pte) throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+	public void fazerJogada(Jogador jogador, PosicaoTabuleiroEnum pte) throws PosicaoJaPreenchidaException, PartidaFinalizadaException, JsonProcessingException {
 		validarEstadoPartida();
 		this.avaliadorPartida.getTabuleiro().jogarNaPosicao(pte, mapJogadorElemento.get(jogador));
 		this.listaDeJogadas.add(pte);
 		avaliarSituacaoPartida();
 	}
 
-	private void avaliarSituacaoPartida() {
+	private void avaliarSituacaoPartida() throws JsonProcessingException {
 		if(EstadoPartidaEnum.FINALIZADO.equals(this.getEstado())) {
 			if(!TipoResultadoEnum.VELHA.equals(this.avaliadorPartida.obterResultado())) {
 				String elemento = this.avaliadorPartida.obterResultado().getElemento();
 				for(Jogador j: mapJogadorElemento.keySet()) {
 					if(TipoElementoEnum.getByValue(elemento).equals(mapJogadorElemento.get(j))) {
 						this.jogadorVencedor = j;
+						this.partidaDao.salvar(new PartidaEntity(this));
 						break;
 					}
 				}
