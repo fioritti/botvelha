@@ -1,37 +1,55 @@
 package org.botvelha.domain.partida;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.botvelha.domain.jogador.Jogador;
+import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
+import org.botvelha.domain.tabuleiro.PosicaoTabuleiroEnum;
+import org.botvelha.domain.tabuleiro.Tabuleiro;
 import org.botvelha.domain.tabuleiro.TipoElementoEnum;
-import org.botvelha.repository.entity.Usuario;
 
 public class Partida {
 
-	private Usuario[] jogadores;
-	private Map<Usuario, TipoElementoEnum> mapJogadorElemento;
+	private Jogador[] jogadores;
+	private Map<Jogador, TipoElementoEnum> mapJogadorElemento;
+	private List<PosicaoTabuleiroEnum> listaDeJogadas;
 	private int jogadorInicial;
 	private int jogadorAtual;
+	private AvaliadorPartida avaliadorPartida;
+	private Jogador jogadorVencedor;
 	
 	
-	public Partida(Usuario jogador, Usuario boot) {
-		this.jogadores = new Usuario[2];
+	public Partida(Jogador jogador, Jogador boot) {
+		this.jogadores = new Jogador[2];
 		this.jogadores[0]=jogador;
 		this.jogadores[1]=boot;
+		this.avaliadorPartida = new AvaliadorPartida(new Tabuleiro());
 	}
 
 
-	public void iniciar() {
+	public void iniciar() throws PartidaFinalizadaException {
 		sortearJogadorInicial();
-		this.mapJogadorElemento = new HashMap<Usuario, TipoElementoEnum>();
+		this.mapJogadorElemento = new HashMap<Jogador, TipoElementoEnum>();
 		this.mapJogadorElemento.put(jogadores[this.jogadorInicial], TipoElementoEnum.O);
 		this.mapJogadorElemento.put(obterProximoJogador(), TipoElementoEnum.X);
+		this.listaDeJogadas = new ArrayList<PosicaoTabuleiroEnum>();
 	}
 
-	public Usuario obterProximoJogador() {
+	public Jogador obterProximoJogador() throws PartidaFinalizadaException {
+		validarEstadoPartida();
 		this.jogadorAtual = jogadorAtual==0?1:0;
 		return jogadores[jogadorAtual];
+	}
+
+
+	private void validarEstadoPartida() throws PartidaFinalizadaException {
+		if(EstadoPartidaEnum.FINALIZADO.equals(this.getEstado())) {
+			throw new PartidaFinalizadaException("Partida já está finalizada");
+		}
 	}
 
 
@@ -41,13 +59,50 @@ public class Partida {
 	}
 
 
-	public Usuario obterPrimeroJogador() {
+	public Jogador obterPrimeroJogador() {
 		return jogadores[jogadorInicial];
 	}
 
+	public Jogador obterVencedor() {
+		return this.jogadorVencedor;
+	}
 
-	public TipoElementoEnum getElementoPorJogador(Usuario jogador) {
+	public TipoElementoEnum getElementoPorJogador(Jogador jogador) {
 		return mapJogadorElemento.get(jogador);
+	}
+
+
+	public void fazerJogada(Jogador jogador, PosicaoTabuleiroEnum pte) throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		validarEstadoPartida();
+		this.avaliadorPartida.getTabuleiro().jogarNaPosicao(pte, mapJogadorElemento.get(jogador));
+		this.listaDeJogadas.add(pte);
+		avaliarSituacaoPartida();
+	}
+
+	private void avaliarSituacaoPartida() {
+		if(EstadoPartidaEnum.FINALIZADO.equals(this.getEstado())) {
+			if(!TipoResultadoEnum.VELHA.equals(this.avaliadorPartida.obterResultado())) {
+				String elemento = this.avaliadorPartida.obterResultado().getElemento();
+				for(Jogador j: mapJogadorElemento.keySet()) {
+					if(TipoElementoEnum.getByValue(elemento).equals(mapJogadorElemento.get(j))) {
+						this.jogadorVencedor = j;
+						break;
+					}
+				}
+				
+			}
+			
+		}
+	}
+
+
+	public EstadoPartidaEnum getEstado() {
+		return this.avaliadorPartida.obterEstado();
+	}
+
+
+	public List<PosicaoTabuleiroEnum> getListaDeJogadas() {
+		return listaDeJogadas;
 	}
 
 }

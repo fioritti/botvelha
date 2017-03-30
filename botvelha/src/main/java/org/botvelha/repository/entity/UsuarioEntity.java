@@ -6,14 +6,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Usuario {
+public class UsuarioEntity {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String email;
 
-	public Usuario(String email) {
+	public UsuarioEntity(String email) {
 		this.email = email;
 	}
 

@@ -1,48 +1,152 @@
 package org.botvelha.domain.partida;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.botvelha.repository.entity.Usuario;
+import java.util.Arrays;
+import java.util.List;
+
+import org.botvelha.domain.jogador.Jogador;
+import org.botvelha.domain.jogador.JogadorHumano;
+import org.botvelha.domain.jogador.bot.DummyBot;
+import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
+import org.botvelha.domain.tabuleiro.PosicaoTabuleiroEnum;
 import org.junit.Test;
 
 public class PartidaTest {
+	
 
 	@Test
-	public void deveAssociarUsuarioComElemento() {
-		Usuario guileme13 = new Usuario("guileme13@gmail.com");
-		Usuario boot = new Usuario("bot@botvelha.com");
-		Partida partida = new Partida(guileme13,boot);
+	public void deveAssociarUsuarioComElemento() throws PartidaFinalizadaException {
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
 		partida.iniciar();
 		assertTrue(partida.getElementoPorJogador(guileme13)!=null);
 	}
 	
 	@Test
-	public void deveVerificarQueProximoJogadoresNaoIgualAoAnterior() {
-		Usuario guileme13 = new Usuario("guileme13@gmail.com");
-		Usuario boot = new Usuario("bot@botvelha.com");
-		Partida partida = new Partida(guileme13,boot);
+	public void deveVerificarQueProximoJogadoresNaoIgualAoAnterior() throws PartidaFinalizadaException {
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
 		partida.iniciar();
-		Usuario u1 = partida.obterProximoJogador();
-		Usuario u2 = partida.obterProximoJogador();
+		Jogador u1 = partida.obterProximoJogador();
+		Jogador u2 = partida.obterProximoJogador();
 		assertTrue(u1!=u2);
 	}
 	
-	public void deveFazerJogadaEJogoContinuaEmAndameto() {
-		
+	@Test
+	public void deveFazerJogadaEJogoContinuaEmAndameto() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.EM_ANDAMENTO;
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		Jogador jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_0);
+		assertEquals(estadoPartidaEsperado, partida.getEstado());
+	}
+	
+	@Test
+	public void deveFazerJogadasEJogoDeveSerFinalizado() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.FINALIZADO;
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		int contador = 0;
+		while(EstadoPartidaEnum.EM_ANDAMENTO.equals(partida.getEstado())) {
+			Jogador jogador = partida.obterProximoJogador();
+			partida.fazerJogada(jogador,PosicaoTabuleiroEnum.values()[contador++]);
+		}
+		assertEquals(estadoPartidaEsperado, partida.getEstado());
+	}
+
+	@Test(expected=PosicaoJaPreenchidaException.class)
+	public void deveFazerJogadaEmPosicaoJaOcupadaEObterErro() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		int contador = 0;
+		while(EstadoPartidaEnum.EM_ANDAMENTO.equals(partida.getEstado())) {
+			Jogador jogador = partida.obterProximoJogador();
+			partida.fazerJogada(jogador,PosicaoTabuleiroEnum.values()[contador]);
+		}
+	}
+
+	@Test
+	public void deveFazerJogadasObterPartidaFinalizadaEObterVencedor() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		EstadoPartidaEnum estadoPartidaEsperado = EstadoPartidaEnum.FINALIZADO;
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		Jogador jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_2);
+		assertEquals(estadoPartidaEsperado, partida.getEstado());
+		assertTrue(partida.obterVencedor()!=null);
 		
 	}
 	
-	
-	public void deveArmazenarJogadas() {
+	@Test(expected=PartidaFinalizadaException.class)
+	public void deveFazerJogadasEObterExcecaoDePartidaJaFinalizada() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		Jogador jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_2);
+		jogador = partida.obterProximoJogador();
 		
 	}
 	
-	public void deveArmazenarVencedor() {
+	@Test
+	public void deveArmazenarJogadas() throws PosicaoJaPreenchidaException, PartidaFinalizadaException {
+		List<PosicaoTabuleiroEnum> jogadasArmazendasEsperada = Arrays.asList(PosicaoTabuleiroEnum._0_0,PosicaoTabuleiroEnum._1_0,PosicaoTabuleiroEnum._0_1,PosicaoTabuleiroEnum._1_1,PosicaoTabuleiroEnum._0_2);
 		
+		Jogador guileme13 = new JogadorHumano("guileme13@gmail.com");
+		Jogador bot = new DummyBot();
+		Partida partida = new Partida(guileme13,bot);
+		partida.iniciar();
+		Jogador jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_0);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._1_1);
+		jogador = partida.obterProximoJogador();
+		partida.fazerJogada(jogador,PosicaoTabuleiroEnum._0_2);
+		
+		List<PosicaoTabuleiroEnum> listaDeJogadas = partida.getListaDeJogadas();
+		boolean resultadoTeste = true;
+		for(int i=0;i<jogadasArmazendasEsperada.size();i++) {
+			if(!listaDeJogadas.get(i).equals(jogadasArmazendasEsperada.get(i))) {
+				resultadoTeste = false;
+				break;
+			}
+		}
+		assertTrue(resultadoTeste);
 	}
 	
-	public void deveSalvarPartida() {
-		
-	}
 
 }

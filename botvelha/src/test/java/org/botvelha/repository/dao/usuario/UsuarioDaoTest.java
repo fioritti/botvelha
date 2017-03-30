@@ -3,7 +3,7 @@ package org.botvelha.repository.dao.usuario;
 import static org.junit.Assert.*;
 
 import org.botvelha.repository.dao.UsuarioDao;
-import org.botvelha.repository.entity.Usuario;
+import org.botvelha.repository.entity.UsuarioEntity;
 import org.botvelha.repository.infrastructure.CriadorDeSessao;
 import org.hibernate.Session;
 import org.junit.After;
@@ -27,9 +27,9 @@ public class UsuarioDaoTest {
 	public void deveCriarUsuario() {
 		String email = "guileme13@gmail.com";
 		
-		Usuario usuario = new Usuario(email);
+		UsuarioEntity usuario = new UsuarioEntity(email);
 		usuarioDao.salvar(usuario);
-		Usuario usuarioEncontrado = usuarioDao.buscar(email);
+		UsuarioEntity usuarioEncontrado = usuarioDao.buscar(email);
 		
 		assertEquals(email, usuarioEncontrado.getEmail());
 		
