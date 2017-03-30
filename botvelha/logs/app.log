@@ -1,0 +1,4 @@
+[2017-03-29 10:28:24,945][ INFO][ main][org.botvelha.repository.dao.UsuarioDao] Criando novo usuário : Usuario [id=null, email=guileme13@gmail.com]
+[2017-03-29 10:28:24,977][ INFO][ main][org.botvelha.repository.dao.UsuarioDao] Buscando usuário com email : guileme13@gmail.com
+[2017-03-29 10:30:37,125][ INFO][ main][org.botvelha.repository.dao.UsuarioDao] Criando novo usuário : Usuario [id=null, email=guileme13@gmail.com]
+[2017-03-29 10:30:37,159][ INFO][ main][org.botvelha.repository.dao.UsuarioDao] Buscando usuário com email : guileme13@gmail.com

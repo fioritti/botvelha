@@ -1,0 +1,148 @@
+<configuration scan="true" scanPeriod="10 seconds">
+
+	<jmxConfigurator />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- <filter class="ch.qos.logback.classic.filter.LevelFilter"> <level>INFO</level> 
+			<onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter> -->
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-DEBUG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/debug.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/debug.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-INFO"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/app.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/app.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-WARN"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/warn.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>warn.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/error.log</file>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/error.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+
+	</appender>
+
+	<appender name="FILE-STACKTRACE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/stacktrace.log</file>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>TRACE</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>stacktrace.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>[%d][%5level][%5.20thread][%logger{100}] %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="ASYNC-FILE-STACKTRACE" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-STACKTRACE" />
+	</appender>
+
+	<appender name="ASYNC-FILE-DEBUG" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-DEBUG" />
+	</appender>
+	<appender name="ASYNC-FILE-INFO" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-INFO" />
+	</appender>
+	<appender name="ASYNC-FILE-WARN" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-WARN" />
+	</appender>
+	<appender name="ASYNC-FILE-ERROR" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-ERROR" />
+	</appender>
+	<appender name="ASYNC-STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="STDOUT" />
+	</appender>
+
+	<logger name="org.botvelha" level="DEBUG" />
+	
+	<logger name="org.hibernate" level="ERROR" />
+	<logger name="org.hibernate.SQL" level="OFF" />
+	<logger name="org.hibernate.type" level="OFF" />
+	
+
+
+	<logger name="stacktrace" level="TRACE">
+		<appender-ref ref="ASYNC-FILE-STACKTRACE" />
+	</logger>
+	
+	<root level="INFO">
+		<appender-ref ref="ASYNC-FILE-DEBUG" />
+		<appender-ref ref="ASYNC-FILE-INFO" />
+		<appender-ref ref="ASYNC-FILE-WARN" />
+		<appender-ref ref="ASYNC-FILE-ERROR" />
+		<appender-ref ref="ASYNC-STDOUT" />
+	</root>
+</configuration>
