@@ -2,6 +2,8 @@ package org.botvelha.repository.dao.partida;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.botvelha.domain.jogador.Jogador;
 import org.botvelha.domain.jogador.JogadorHumano;
 import org.botvelha.domain.jogador.bot.DummyBot;
@@ -53,6 +55,19 @@ public class PartidaDaoTest {
 		
 		PartidaEntity partidaDoBanco = partidaDao.buscar(partidaEntity.getId());
 		assertTrue(partidaDoBanco!=null);
+	}
+	
+	
+	@Test
+	public void deveObterPartidasVencidasPorQuemIniciou() {
+		List<PartidaEntity> partidas = partidaDao.obterPartidasVencidasPorQuemIniciou();
+		assertTrue(!partidas.isEmpty());
+	}
+	
+	@Test
+	public void deveObterPartidasVencidasPorQuemIniciouEmSegundo() {
+		List<PartidaEntity> partidas = partidaDao.obterPartidasVencidasPorQuemIniciouEmSegundo();
+		assertTrue(!partidas.isEmpty());
 	}
 	
 	@After

@@ -104,14 +104,16 @@ public class Partida {
 		}
 	}
 
-
 	public EstadoPartidaEnum getEstado() {
 		return this.avaliadorPartida.obterEstado();
 	}
 
-
 	public List<PosicaoTabuleiroEnum> getListaDeJogadas() {
 		return listaDeJogadas;
+	}
+
+	public AvaliadorPartida getAvaliadorPartida() {
+		return avaliadorPartida;
 	}
 
 }

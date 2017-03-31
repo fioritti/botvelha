@@ -1,9 +1,12 @@
 package org.botvelha.repository.dao;
 
+import java.util.List;
+
 import org.botvelha.infrastructure.logger.Logger;
 import org.botvelha.infrastructure.logger.LoggerFactory;
 import org.botvelha.repository.entity.PartidaEntity;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class PartidaDao {
 
@@ -16,7 +19,7 @@ public class PartidaDao {
 	}
 
 	public void salvar(PartidaEntity partida) {
-		logger.info("Salvando partida : {}", partida);
+		logger.debug("Salvando partida : {}", partida);
 		session.save(partida);
 	}
 	
@@ -28,6 +31,25 @@ public class PartidaDao {
 				.setParameter("id", id)
 				.uniqueResult();
 	}
+
+	public List<PartidaEntity> obterPartidasVencidasPorQuemIniciou() {
+		logger.info("Buscando partida vencidas por quem iniciou");
+		List list = session
+		.createQuery(
+				"from PartidaEntity p where p.elementoVencedor = p.elementoIniciouPartida")
+		.list();
+		return list;
+	}
+
+	public List<PartidaEntity> obterPartidasVencidasPorQuemIniciouEmSegundo() {
+		logger.info("Buscando partida vencidas por quem iniciou em segundo");
+		List list = session
+		.createQuery(
+				"from PartidaEntity p where p.elementoVencedor != p.elementoIniciouPartida")
+		.list();
+		return list;
+	}
+
 
 	
 }

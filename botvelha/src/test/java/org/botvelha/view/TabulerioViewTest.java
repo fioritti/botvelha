@@ -1,8 +1,9 @@
-package org.botvelha.domain.tabuleiro;
+package org.botvelha.view;
 
 import static org.junit.Assert.*;
 
 import org.botvelha.domain.partida.AvaliadorPartida;
+import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
 import org.botvelha.testbuilders.CriadorDeCenariosTabuleiro;
 import org.botvelha.testbuilders.CriadorDeCenariosTabuleiroView;
 import org.botvelha.view.TabuleiroView;

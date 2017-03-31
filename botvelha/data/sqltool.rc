@@ -1,0 +1,10 @@
+#sqltool.rc
+
+# A personal, local, persistent database.
+urlid botvelhadb
+url jdbc:hsqldb:file:C:\Users\gFioritti\git\botvelha\botvelha\data\botvelhadb;shutdown=true
+username sa
+password
+# When connecting directly to a file database like this, you should 
+# use the shutdown connection property like this to shut down the DB
+# properly when you exit the JVM.

@@ -135,7 +135,7 @@ public class CriadorDeCenariosTabuleiro {
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._2_0, TipoElementoEnum.O);
 		return tabuleiro;
 	}
-
+	
 	
 
 }
