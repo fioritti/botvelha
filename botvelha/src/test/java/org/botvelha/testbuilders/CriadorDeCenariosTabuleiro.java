@@ -18,9 +18,9 @@ public class CriadorDeCenariosTabuleiro {
 		Tabuleiro tabuleiro = new Tabuleiro();
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_0, TipoElementoEnum.X);
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_1, TipoElementoEnum.O);
-		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_0, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_2, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_0, TipoElementoEnum.O);
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_1, TipoElementoEnum.X);
-		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._2_1, TipoElementoEnum.O);
 		return tabuleiro;
 	}
 	
@@ -133,6 +133,20 @@ public class CriadorDeCenariosTabuleiro {
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_2, TipoElementoEnum.O);
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_1, TipoElementoEnum.O);
 		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._2_0, TipoElementoEnum.O);
+		return tabuleiro;
+	}
+
+	public Tabuleiro emAndamentoCenario2() throws PosicaoJaPreenchidaException {
+		Tabuleiro tabuleiro = new Tabuleiro();
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_0, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_1, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._0_2, TipoElementoEnum.O);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_0, TipoElementoEnum.O);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_1, TipoElementoEnum.O);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._1_2, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._2_0, TipoElementoEnum.X);
+		tabuleiro.jogarNaPosicao(PosicaoTabuleiroEnum._2_1, TipoElementoEnum.O);
+
 		return tabuleiro;
 	}
 	

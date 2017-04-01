@@ -29,10 +29,10 @@ public class Partida {
 	private PartidaDao partidaDao;
 	
 	
-	public Partida(Jogador jogador, Jogador boot) {
+	public Partida(Jogador jogador, Jogador bot) {
 		this.jogadores = new Jogador[2];
 		this.jogadores[0]=jogador;
-		this.jogadores[1]=boot;
+		this.jogadores[1]=bot;
 		this.avaliadorPartida = new AvaliadorPartida(new Tabuleiro());
 		this.partidaDao = new PartidaDao(new CriadorDeSessao().getSession());
 		

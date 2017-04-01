@@ -7,12 +7,13 @@ import java.util.Scanner;
 import org.botvelha.domain.jogador.Jogador;
 import org.botvelha.domain.jogador.JogadorHumano;
 import org.botvelha.domain.jogador.bot.Bot;
-import org.botvelha.domain.jogador.bot.DummyBot;
+import org.botvelha.domain.jogador.bot.SmartBot;
 import org.botvelha.domain.partida.EntradaInvalidaException;
 import org.botvelha.domain.partida.EstadoPartidaEnum;
 import org.botvelha.domain.partida.Partida;
 import org.botvelha.domain.partida.PartidaFinalizadaException;
 import org.botvelha.domain.partida.PosicaoInvalidaException;
+import org.botvelha.domain.partida.TipoResultadoEnum;
 import org.botvelha.domain.tabuleiro.PosicaoJaPreenchidaException;
 import org.botvelha.domain.tabuleiro.PosicaoTabuleiroEnum;
 import org.botvelha.domain.tabuleiro.TipoElementoEnum;
@@ -32,6 +33,7 @@ public class PartidaConsoleView {
 	private static final String M_PARTIDA_ENCERRADA = "Terminiou.";
 	private static final String M_BOT_VENCEU = "O Bot venceu!!";
 	private static final String M_VOCE_VENCEU = "Você venceu";
+	private static final String M_DEU_VELHA = "Deu Velha!!";
 	
 	private Partida partida;
 	private JogadorHumano jogadorHumano;
@@ -39,7 +41,7 @@ public class PartidaConsoleView {
 	private Map<Integer, PosicaoTabuleiroEnum> mapNumeroPosicaoTabuleiro;
 	private Scanner scanner;
 	
-	public static void main(String[] args) throws JsonProcessingException, PartidaFinalizadaException, PosicaoJaPreenchidaException, EntradaInvalidaException {
+	public static void main(String[] args) throws Exception {
 		PartidaConsoleView partidaConsoleView = new PartidaConsoleView();
 		partidaConsoleView.executarJogo();
 	}
@@ -51,7 +53,7 @@ public class PartidaConsoleView {
 		}
 	}
 	
-	public void executarJogo() throws JsonProcessingException, PartidaFinalizadaException, PosicaoJaPreenchidaException, EntradaInvalidaException {
+	public void executarJogo() throws Exception {
 		this.iniciarPartida();
 		while(this.avaliarPartida());
 	}
@@ -64,11 +66,13 @@ public class PartidaConsoleView {
 		this.jogadorHumano = new JogadorHumano(emailJogador);
 	}
 	
-	public void iniciarPartida() throws PartidaFinalizadaException, JsonProcessingException, PosicaoJaPreenchidaException, EntradaInvalidaException {
+	public void iniciarPartida() throws Exception {
 		this.scanner = new Scanner(System.in);
-		this.bot = new DummyBot();
+//		this.bot = new DummyBot();
+		this.bot = new SmartBot();
 		this.partida = new Partida(jogadorHumano, bot);
 		this.partida.iniciar();
+		this.bot.informaQuemIniciaPartida(this.partida.obterPrimeroJogador());
 		System.out.println(M_PARTIDA_INICIADA);
 		TipoElementoEnum elementoJogadorHumano = this.partida.getElementoPorJogador(jogadorHumano);
 		TipoElementoEnum elementoBot = this.partida.getElementoPorJogador(bot);
@@ -76,7 +80,7 @@ public class PartidaConsoleView {
 		identificarQuemIniciaPartida();
 	}
 	
-	public boolean avaliarPartida() throws PartidaFinalizadaException, JsonProcessingException, PosicaoJaPreenchidaException, EntradaInvalidaException {
+	public boolean avaliarPartida() throws Exception {
 		if(EstadoPartidaEnum.EM_ANDAMENTO.equals(this.partida.getEstado())) {
 			Jogador proximoJogador = this.partida.obterProximoJogador();
 			if(proximoJogador instanceof Bot) {
@@ -88,16 +92,19 @@ public class PartidaConsoleView {
 				System.out.println(M_SUA_VEZ);
 				obterJogadaHumano();
 			}
-			
 			return true;
 		}else {
 			System.out.println(M_PARTIDA_ENCERRADA);
 			exibirTabuleiro();
-			Jogador obterVencedor = this.partida.obterVencedor();
-			if(obterVencedor instanceof Bot) {
-				System.out.println(M_BOT_VENCEU);
+			if(TipoResultadoEnum.VELHA.equals(this.partida.getAvaliadorPartida().obterResultado())) {
+				System.out.println(M_DEU_VELHA);
 			}else {
-				System.out.println(M_VOCE_VENCEU);
+				Jogador obterVencedor = this.partida.obterVencedor();
+				if(obterVencedor instanceof Bot) {
+					System.out.println(M_BOT_VENCEU);
+				}else {
+					System.out.println(M_VOCE_VENCEU);
+				}
 			}
 			this.scanner.close();
 		}
@@ -105,7 +112,7 @@ public class PartidaConsoleView {
 	}
 	
 
-	private void identificarQuemIniciaPartida() throws JsonProcessingException, PosicaoJaPreenchidaException, PartidaFinalizadaException, EntradaInvalidaException {
+	private void identificarQuemIniciaPartida() throws Exception {
 		Jogador primeiroJogador = this.partida.obterProximoJogador();
 		if(primeiroJogador instanceof Bot) {
 			System.out.println(M_BOT_INICIA_PARTIDA);

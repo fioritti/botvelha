@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class DummyBotTest {
 
 	@Test
-	public void deveEscolherUmaPosicaoParaJogar() throws PosicaoJaPreenchidaException, JsonProcessingException, PartidaFinalizadaException {
+	public void deveEscolherUmaPosicaoParaJogar() throws Exception {
 		Bot bot = new DummyBot();
 		Partida partida = new Partida(new JogadorHumano("guileme13@gmail.com"),bot);
 		partida.iniciar();

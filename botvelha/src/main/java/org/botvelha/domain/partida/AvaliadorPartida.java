@@ -17,6 +17,7 @@ public class AvaliadorPartida {
 	}
 
 	public EstadoPartidaEnum obterEstado() {
+		this.existePosicaoNaoPreenchida = false;
 		String[][] estadoTabuleiro = tabuleiro.obterEstadoAtual();
 		if (EstadoPartidaEnum.FINALIZADO.equals(avaliarVertical(estadoTabuleiro))
 				|| EstadoPartidaEnum.FINALIZADO.equals(avaliarHorizontal(estadoTabuleiro))
@@ -79,13 +80,11 @@ public class AvaliadorPartida {
 			if (item == null) {
 				this.existePosicaoNaoPreenchida = true;
 				estadoDimensao = EstadoPartidaEnum.EM_ANDAMENTO;
-				break;
 			} else {
 				if (elemento == null) {
 					elemento = item;
 				} else if (!elemento.equals(item)) {
 					estadoDimensao = EstadoPartidaEnum.EM_ANDAMENTO;
-					break;
 				}
 			}
 		}
